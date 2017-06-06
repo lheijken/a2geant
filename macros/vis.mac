@@ -60,17 +60,23 @@
 # The third file will contain the detector plus ten events.
 #/vis/open OGLI
 #/vis/open OGL
-/vis/open OGLIX
+#/vis/open OGLIX
+/vis/open OGLIQt
 #/vis/open DAWNFILE
-#/vis/viewer/reset
-/vis/viewer/zoom 1.2
-/vis/viewer/set/viewpointThetaPhi 40. 40.
-/vis/scene/add/trajectories
-/vis/scene/add/hits
-/vis/scene/create 
+/vis/viewer/reset
+/vis/viewer/zoom 0.8
+/vis/viewer/set/viewpointThetaPhi 130. 40.
+#/vis/viewer/set/sectionPlane on 0 0 0 cm 1 0 0
+/vis/viewer/addCutawayPlane 0 0 0 m -1 0 0
+/vis/viewer/addCutawayPlane 0 0 0 m 0 -1 0
+#/vis/scene/add/trajectories
+#/vis/scene/add/hits
+#/vis/scene/create 
 /vis/viewer/set/style surface
+#/vis/viewer/set/style wireframe
 /vis/drawVolume
-/vis/scene/endOfEventAction accumulate	
+/vis/scene/endOfEventAction accumulate
+/vis/scene/add/axes 0 0 0 15 cm auto true
 /tracking/storeTrajectory 1
 #/vis/ogl/printEPS	
 /vis/geometry/set/visibility CNIN 0 false
