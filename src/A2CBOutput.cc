@@ -109,6 +109,10 @@ void A2CBOutput::SetBranches(){
   //polarimeter scatter angles
   //fTree->Branch("ScatTheta",&fScatTheta,"fScatTheta/F",basket);
   //fTree->Branch("ScatPhi",&fScatPhi,"fScatPhi/F",basket);
+  fTree->Branch("npiz",&fnpiz,"fnpiz/I",basket);
+  fTree->Branch("ipiz",fipiz,"fipiz[fnpiz]/I",basket);
+  fTree->Branch("epiz",fepiz,"fepiz[fnpiz]/F",basket);
+  fTree->Branch("tpiz",ftpiz,"ftpiz[fnpiz]/F",basket);
 }
 void A2CBOutput::WriteHit(G4HCofThisEvent* HitsColl){
   G4int CollSize=HitsColl->GetNumberOfCollections();
@@ -185,6 +189,15 @@ void A2CBOutput::WriteHit(G4HCofThisEvent* HitsColl){
 	ftofy[ii]=hit->GetPos().y()/CLHEP::cm;
 	ftofz[ii]=hit->GetPos().z()/CLHEP::cm;
 	ftofi[ii]=hit->GetID();
+      }
+    }
+    if(hc->GetName()=="A2SDHitsPizzaSD" || hc->GetName()=="A2SDHitsPizzaVisSD"){
+      fnpiz=hc_nhits;
+      for(Int_t ii=0;ii<fnpiz;ii++){
+        A2Hit* hit=static_cast<A2Hit*>(hc->GetHit(ii));
+        fepiz[ii]=hit->GetEdep()/CLHEP::GeV;
+        ftpiz[ii]=hit->GetTime()/CLHEP::ns;
+        fipiz[ii]=hit->GetID();
       }
     }
   }

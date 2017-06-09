@@ -44,6 +44,7 @@ A2DetectorConstruction::A2DetectorConstruction(G4String detSet)
   fUseCryoTgt=0;
   fUsePol=0;
   fUsePolCap=0;
+  fUsePizza=0;
 
   fCrystalBall=NULL;
   fTAPS=NULL;
@@ -78,6 +79,8 @@ A2DetectorConstruction::A2DetectorConstruction(G4String detSet)
   fPolZ=0;
   //default offset for target
   fTargetZ=0;
+  // default settings for Pizza detector
+  fPizzaZ = A2DetPizza::fgDefaultZPos;
   //has to be done here in case use new material for target
   DefineMaterials();
 
@@ -101,13 +104,14 @@ G4VPhysicalVolume* A2DetectorConstruction::Construct()
   fUseCherenkov=0;
   fUsePol=0;
   fUsePolCap=0;
+  fUsePizza=0;
 
   // read the set up file DetectorSetup.mac
   // get the pointer to the User Interface manager
   G4UImanager* UI = G4UImanager::GetUIpointer();
   G4String command = "/control/execute "+fDetectorSetup;//macros/DetectorSetup.mac";
   UI->ApplyCommand(command);
-  if(fUseCB==0&&fUseTAPS==0&&fUsePID1==0&&fUsePID2==0&&fUsePID3==0&&fUseMWPC==0&&fUsePol==0&&fUseTOF==0&&fUseCherenkov==0&&fUseTarget==G4String("NO")){
+  if(fUseCB==0&&fUseTAPS==0&&fUsePID1==0&&fUsePID2==0&&fUsePID3==0&&fUseMWPC==0&&fUsePol==0&&fUseTOF==0&&fUseCherenkov==0&&fUsePizza==0&&fUseTarget==G4String("NO")){
     G4cout<<"G4VPhysicalVolume* A2DetectorConstruction::Construct() Don't seem to be simulating any detectors, please check you are using an appopriate detector setup. I tried the file "<<fDetectorSetup<< " I will exit here before the computer explodes"<<G4endl;
     exit(0);
   }
@@ -247,6 +251,13 @@ G4VPhysicalVolume* A2DetectorConstruction::Construct()
     G4cout << "Polarimeter Z displaced by " << fPolZ/CLHEP::cm << "cm" << G4endl;
   }
 
+  if(fUsePizza){
+    G4cout<<"A2DetectorConstruction::Construct() Make the Pizza detector "<<fPizzaZ/CLHEP::cm<<" cm from the target"<<G4endl;
+    fPizza=new A2DetPizza(fPizzaZ);
+    fPizza->SetIsInteractive(fIsInteractive);
+    fPizza->Construct(fWorldLogic);
+  }
+
   if(fUseTarget!=G4String("NO")){
     G4cout<<"A2DetectorConstruction::Construct() Fill the "<<fUseTarget<<" with "<<fTargetMaterial->GetName()<<G4endl;
     if(fUseTarget=="Cryo") fTarget=static_cast<A2Target*>(new A2CryoTarget());
@@ -368,6 +379,12 @@ void A2DetectorConstruction::DefineMaterials()
  new G4Material("A2_lD2", z=1., a= 2.014*CLHEP::g/CLHEP::mole, density= 0.162*CLHEP::g/CLHEP::cm3);
  new G4Material("A2_lHe3", z=2., a= 3.0160*CLHEP::g/CLHEP::mole, density= 0.059*CLHEP::g/CLHEP::cm3);
 
+ // Birk's constant for plastic scintillators
+ G4Material* mat = NistManager->FindOrBuildMaterial("G4_PLASTIC_SC_VINYLTOLUENE");
+ const G4double den = 1.023; // density of EJ-204 [g/cm^3]
+ G4double kB = 2.07e-2; // NIM B 170 (2000) 523 [g MeV^-1 cm^-2]
+ kB /= den; // [cm MeV^-1]
+ mat->GetIonisation()->SetBirksConstant(kB*CLHEP::cm/CLHEP::MeV);
 
 //////////
 //Materials for Polarized Target:
@@ -447,6 +464,16 @@ void A2DetectorConstruction::DefineMaterials()
   A2_SilverSteel->AddElement(NistManager->FindOrBuildElement(14), fractionmass=0.0022); // Silicon
   A2_SilverSteel->AddElement(NistManager->FindOrBuildElement(15), fractionmass=0.00014); // Phosphorous
   A2_SilverSteel->AddElement(NistManager->FindOrBuildElement(16), fractionmass=0.00018); // Sulphur
+
+  //
+  // Pizza detector
+  //
+
+  // PMMA C5H8O2 (Acrylic Glass)
+  G4Material* A2_Acrylic = new G4Material("A2_ACRYLIC", 1.19*CLHEP::g/CLHEP::cm3, 3);
+  A2_Acrylic->AddElement(NistManager->FindOrBuildElement(6), 5);
+  A2_Acrylic->AddElement(NistManager->FindOrBuildElement(1), 8);
+  A2_Acrylic->AddElement(NistManager->FindOrBuildElement(8), 2);
 
   /*Now useG4NistManager
  //This function illustrates the possible ways to define materials

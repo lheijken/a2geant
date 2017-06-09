@@ -36,4 +36,4 @@
 /A2/generator/InputFile /home/lena/work/DataFiles/MCGen/Pluto/mkinfiles/pluto_gp_pi0p_epmgp_100kEvs_beamBre_1756ownTFF_mkin.root
 #####Output
 #Open the output file for writing
-/A2/event/setOutputFile /home/lena/work/DataFiles/Data/A2Geant/a2geant_gp_pi0p_epmgp_100kEvs_beamBre_1756ownTFF_PID3.root
+/A2/event/setOutputFile /home/lena/work/DataFiles/Data/A2Geant/a2geant_gp_pi0p_epmgp_100kEvs_beamBre_1756ownTFF_PID3_Pizza.root

@@ -20,6 +20,7 @@
 #include "A2DetMWPC.hh"
 #include "A2DetCherenkov.hh"
 #include "A2DetPol.hh"
+#include "A2DetPizza.hh"
 
 class G4Box;
 class G4LogicalVolume;
@@ -55,6 +56,7 @@ class A2DetectorConstruction : public G4VUserDetectorConstruction
   void SetUseCryoTgt(G4int use){fUseCryoTgt=use;}
   void SetUsePol(G4int use){fUsePol=use;}
   void SetUsePolCap(G4int use){fUsePolCap=use;}
+  void SetUsePizza(G4int use){fUsePizza=use;}
 
   void SetUseTarget(G4String use){fUseTarget=use;}
   void SetTargetMaterial(G4String mat){fTargetMaterial=G4NistManager::Instance()->FindOrBuildMaterial(mat);}
@@ -73,6 +75,7 @@ class A2DetectorConstruction : public G4VUserDetectorConstruction
   void SetMWPCZ(G4double zz){fMWPCZ=zz;}
   void SetPolZ(G4double zz){fPolZ=zz;}
   void SetTargetZ(G4double zz){fTargetZ=zz;}
+  void SetPizzaZ(G4double zz){fPizzaZ=zz;}
 
   A2Target* GetTarget(){return fTarget;}
 
@@ -106,6 +109,7 @@ public:
   A2DetTOF* fTOF;   //MWPC detector
   A2DetCherenkov* fCherenkov; //Cherenkov detector
   A2DetPol* fPol; // Polarimeter
+  A2DetPizza* fPizza; // Pizza detector
 
   G4ThreeVector fHemiGap;
   A2Target* fTarget;
@@ -130,6 +134,7 @@ public:
   G4int fUseCherenkov; //Build the Cherenkov
   G4int fUsePol; //Build the polarimeter
   G4int fUsePolCap; // Build the cap for the Phase 2 polarimeter
+  G4int fUsePizza; //Build the Pizza detector
 
   G4String fTOFparFile; //TOF setup configuration
 
@@ -154,6 +159,9 @@ public:
   //Target setup
   G4int fUseCryoTgt;
   G4double fTargetZ;
+
+  // Pizza setup
+  G4double fPizzaZ;
 
 private:
 
